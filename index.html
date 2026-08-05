@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Eternal Pulse — A Love Story</title>
+<meta name="description" content="An interactive love story landing page." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Playfair+Display:ital,wght@0,500;1,500;1,600&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Styles -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NOISE / GRAIN OVERLAY ============ -->
+<div class="grain-overlay"></div>
+
+<!-- ============ CUSTOM CURSOR ============ -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div class="loader" id="loader">
+  <div class="loader-heart">
+    <svg viewBox="0 0 32 29" class="loader-heart-svg">
+      <path d="M16 28.5 C16 28.5 1 18.7 1 9.3 C1 3.9 5.1 0.5 9.7 0.5 C12.9 0.5 15 2.3 16 4.2 C17 2.3 19.1 0.5 22.3 0.5 C26.9 0.5 31 3.9 31 9.3 C31 18.7 16 28.5 16 28.5 Z"/>
+    </svg>
+  </div>
+  <div class="loader-percent" id="loaderPercent">0</div>
+  <div class="loader-bar-track">
+    <div class="loader-bar-fill" id="loaderBarFill"></div>
+  </div>
+  <div class="loader-label">memuat kenangan<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+</div>
+
+<!-- ============ THREE.JS CANVAS (particle field) ============ -->
+<canvas id="webgl-bg"></canvas>
+
+<!-- ============ FLOATING HEARTS (DOM layer) ============ -->
+<div class="floating-hearts" id="floatingHearts" aria-hidden="true"></div>
+
+<!-- ============ MUSIC PLAYER ============ -->
+<div class="music-player" id="musicPlayer">
+  <audio id="bgAudio" loop preload="none">
+    <source src="/asset/penjaga hati_spotdown.org.mp3" type="audio/mpeg">
+  </audio>
+  <button class="music-btn" id="playPauseBtn" aria-label="Putar musik">
+    <span class="music-wave">
+      <span></span><span></span><span></span><span></span>
+    </span>
+    <i class="fa-solid fa-play" id="playIcon"></i>
+  </button>
+  <button class="music-btn music-btn-small" id="muteBtn" aria-label="Bisukan musik">
+    <i class="fa-solid fa-volume-high" id="volIcon"></i>
+  </button>
+</div>
+
+<!-- ============ SCROLL PROGRESS ============ -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============ MAIN CONTENT ============ -->
+<main id="main">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <p class="hero-eyebrow" data-reveal>sebuah permohonan maaf dari orang tersayang</p>
+
+    <div class="hero-heart-wrap" id="heroHeartWrap">
+      <div class="heart-orbit-ring ring-1"></div>
+      <div class="heart-orbit-ring ring-2"></div>
+      <div class="heart-glow-blur"></div>
+      <svg viewBox="0 0 200 180" class="hero-heart-svg" id="heroHeart">
+        <defs>
+          <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff6ec7"/>
+            <stop offset="45%" stop-color="#ff2d95"/>
+            <stop offset="100%" stop-color="#9b2cff"/>
+          </linearGradient>
+        </defs>
+        <path d="M100 175 C100 175 8 115 8 55 C8 24 32 3 61 3 C80 3 94 14 100 27 C106 14 120 3 139 3 C168 3 192 24 192 55 C192 115 100 175 100 175 Z" fill="url(#heartGrad)"/>
+      </svg>
+      <div class="heart-spark s1"></div>
+      <div class="heart-spark s2"></div>
+      <div class="heart-spark s3"></div>
+    </div>
+
+    <h1 class="hero-title" data-reveal>
+      <span class="line">Setiap kata maaf dariku,</span>
+      <span class="line line-accent">Milikmu.</span>
+    </h1>
+    <p class="hero-sub" data-reveal>Sebuah web yang di susuh setulus hati,di susun oleh nanda kurniawan.</p>
+
+    <a href="#welcome" class="btn btn-primary hero-cta magnetic" data-reveal>
+      <span>Mulai Kisahnya</span>
+      <i class="fa-solid fa-heart"></i>
+    </a>
+
+    <div class="scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-hint-line"><div class="scroll-hint-dot"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= WELCOME ================= -->
+  <section class="section welcome" id="welcome">
+    <div class="section-inner">
+      <span class="section-eyebrow" data-split>Selamat Datang</span>
+      <h2 class="section-title text-reveal" data-split>
+        Ke dalam ruang kecil<br>tempat maafku kusampaikan <span class="italic-accent">disimpan.</span>
+      </h2>
+      <p class="section-text" data-split>
+        ini bukan sekedar halaman web. ini adalah tempat di mana aku menuangkan isi hati ,
+        mengakui semua kesalahanku , dan berharap kamu bisa melihat betapa seriusnya aku
+        ingin berubah. Gulir kebawah, semoga setiap bagian bisa menyampaikan.
+        
+        
+      </p>
+      <div class="welcome-stats">
+        <div class="stat-card glass-card tilt-card">
+          <span class="stat-num" data-count="111">0</span>
+          <span class="stat-label">hari bersama</span>
+        </div>
+        <div class="stat-card glass-card tilt-card">
+          <span class="stat-num" data-count="2">0</span>
+          <span class="stat-label">kota dijelajahi</span>
+        </div>
+        <div class="stat-card glass-card tilt-card">
+          <span class="stat-num" data-count="999999999">0</span>
+          <span class="stat-label">alasan mencintaimu</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LOVE MESSAGE ================= -->
+  <section class="section love-message" id="message">
+  <div class="section-inner narrow">
+    <span class="section-eyebrow" data-split>Sepucuk Surat</span>
+    <div class="letter-card glass-card">
+      <div class="letter-glow"></div>
+      <i class="fa-solid fa-quote-left letter-quote"></i>
+      
+      <p class="typing-text" id="typingText" data-text="Tulis pesan atau kata-kata manismu di sini...">Aku mau minta maaf atas semua kesalahan aku yang sudah bikin kamu kecewa, capek, dan terluka. Selama kita break, aku banyak introspeksi dan sadar kalau aku harus berubah. Aku nggak mau lagi mengulangi kesalahan yang sama atau membuat kamu merasa disalahkan. Aku ingin membuktikan semuanya lewat tindakan, bukan sekadar kata-kata. Aku masih sayang sama kamu, masih ingin memperjuangkan hubungan ini, dan kalau kamu berkenan, berikan aku satu kesempatan lagi untuk menjadi pasangan yang lebih baik buat kamu. Terima kasih karena sudah menjadi bagian yang sangat berharga dalam hidup aku.</p>
+
+      
+      <span class="typing-cursor" id="typingCursor">|</span>
+      <p class="letter-signature">— maafkan akuuu.</p>
+    </div>
+  </div>
+</section>
+
+  <!-- ================= TIMELINE ================= -->
+  <section class="section timeline-section" id="timeline">
+    <div class="section-inner">
+      <span class="section-eyebrow center" data-split>Perjalanan Kita</span>
+      <h2 class="section-title center text-reveal" data-split>Jejak yang Kita jalani</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-line">
+        <div class="timeline-line-fill" id="timelineFill"></div>
+      </div>
+
+      <div class="timeline-item" data-side="left">
+        <div class="timeline-node"></div>
+        <div class="timeline-card glass-card tilt-card">
+          <span class="timeline-date">Bab Satu</span>
+          <h3>Pertemuan Pertama</h3>
+          <p>sebuah kebetulan kecil bertemu ketika mendapatkan tugas presentasi sekolah.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-side="right">
+        <div class="timeline-node"></div>
+        <div class="timeline-card glass-card tilt-card">
+          <span class="timeline-date">Bab Dua</span>
+          <h3>terjalinnya pertemanan</h3>
+          <p>pertama kalinya aku berinteraksi bersamamu di kota tua.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-side="left">
+        <div class="timeline-node"></div>
+        <div class="timeline-card glass-card tilt-card">
+          <span class="timeline-date">Bab Tiga</span>
+          <h3>percakapan tanpa akhir </h3>
+          <p>berawal dari kata maaf sampai aku tertarik dengan mu.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-side="right">
+        <div class="timeline-node"></div>
+        <div class="timeline-card glass-card tilt-card">
+          <span class="timeline-date">Bab Empat</span>
+          <h3>jatuh suka </h3>
+          <p>aku mulai menyukai mu hingga ingin memilikumu.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-side="left">
+        <div class="timeline-node timeline-node-final"></div>
+        <div class="timeline-card glass-card tilt-card">
+          <span class="timeline-date">Bab yang Masih Ditulis</span>
+          <h3>memilikimu</h3>
+          <p>terima kasih sudah memilihku menjadi bagian dari hidupmu.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GALLERY ================= -->
+  <!-- ================= GALLERY ================= -->
+  <section class="section gallery-section" id="gallery">
+    <div class="section-inner">
+      <span class="section-eyebrow center" data-split>Galeri bersama</span>
+      <h2 class="section-title center text-reveal" data-split>Momen di waterpool kala  itu dan beberapa fotomu di gallery ku</h2>
+      <p class="section-text center" data-split>Setiap foto menyimpan cerita yang tak akan pernah pudar.</p>
+    </div>
+
+    <div class="gallery-masonry" id="galleryMasonry">
+      <!-- Foto 1 -->
+      <div class="gallery-item" data-caption="waterpool bersamamu" style="--h:1.3">
+        <img src="/asset/foto 1.jpeg" alt="waterpool bersamamu" class="gallery-img" />
+        <div class="gallery-overlay">
+          <span>Pertama Kali Bertemu</span>
+          <i class="fa-solid fa-expand"></i>
+        </div>
+      </div>
+
+      <!-- Foto 2 -->
+      <div class="gallery-item" data-caption="waterpool bersamamu" style="--h:1.7">
+        <img src="/asset/foto 2.jpeg" alt="waterpool bersamamu" class="gallery-img" />
+        <div class="gallery-overlay">
+          <span>waterpool bersamamu</span>
+          <i class="fa-solid fa-expand"></i>
+        </div>
+      </div>
+
+      <!-- Foto 3 -->
+      <div class="gallery-item" data-caption="waterpool bersamamu" style="--h:1.1">
+        <img src="/asset/foto 3.jpeg" alt="waterpool bersamamu" class="gallery-img" />
+        <div class="gallery-overlay">
+          <span>waterpool bersamamu</span>
+          <i class="fa-solid fa-expand"></i>
+        </div>
+      </div>
+
+      <!-- Foto 4 -->
+      <div class="gallery-item" data-caption="foto yang tersimpan di galerry ku" style="--h:1.6">
+        <img src="/asset/foto 4.jpeg" alt="foto yang tersimpan di galerry ku" class="gallery-img" />
+        <div class="gallery-overlay">
+          <span>foto yang tersimpan di galerry ku</span>
+          <i class="fa-solid fa-expand"></i>
+        </div>
+      </div>
+
+      <!-- Foto 5 -->
+      <div class="gallery-item" data-caption="foto yang tersimpan di galerry ku" style="--h:1.2">
+        <img src="/asset/foto 5.jpeg" alt="foto yang tersimpan di galerry ku" class="gallery-img" />
+        <div class="gallery-overlay">
+          <span>foto yang tersimpan di galerry ku</span>
+          <i class="fa-solid fa-expand"></i>
+        </div>
+      </div>
+
+      <!-- Foto 6 -->
+      <div class="gallery-item" data-caption="foto yang tersimpan di galerry ku" style="--h:1.5">
+        <img src="/asset/foto 6.jpeg" alt="foto yang tersimpan di galerry ku" class="gallery-img" />
+        <div class="gallery-overlay">
+          <span>foto yang tersimpan di galerry ku</span>
+          <i class="fa-solid fa-expand"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= FAVORITE MOMENTS ================= -->
+  <section class="section favorites" id="favorites">
+    <div class="section-inner">
+      <span class="section-eyebrow center" data-split>Momen Favorit</span>
+      <h2 class="section-title center text-reveal" data-split>Yang Paling Kusimpan Erat</h2>
+    </div>
+
+    <div class="favorites-grid">
+      <div class="favorite-card glass-card tilt-card" data-reveal>
+        <div class="favorite-icon"><i class="fa-solid fa-mug-hot"></i></div>
+        <h3>bioskop date</h3>
+        <p>ini adalah momen spesial bagi diriku di mana kita pertama kali menonton film berdua bersama kamu.</p>
+      </div>
+      <div class="favorite-card glass-card tilt-card" data-reveal>
+        <div class="favorite-icon"><i class="fa-solid fa-music"></i></div>
+        <h3>ragunan date</h3>
+        <p>ini adalah momen spesial bagi diriku di mana kita pergi berdua ke ragunan dan melihat hewan bersama.</p>
+      </div>
+      <div class="favorite-card glass-card tilt-card" data-reveal>
+        <div class="favorite-icon"><i class="fa-solid fa-cloud-moon"></i></div>
+        <h3>thejungle date</h3>
+        <p>ini adalah momen spesial bagi diriku di mana kita pergi berenang bersama kamu dan teman teman dekat.</p>
+      </div>
+      <div class="favorite-card glass-card tilt-card" data-reveal>
+        <div class="favorite-icon"><i class="fa-solid fa-umbrella"></i></div>
+        <h3>yang paling berkesan</h3>
+        <p>bermain dan menghabiskan waktu bersama kamu adalah momen yang paling berkesan dan spesial bagi diriku , momen ini tidak akan bisa di gantikan saat ini.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CLOSING ================= -->
+  <section class="section closing" id="closing">
+    <div class="closing-glow"></div>
+    <div class="section-inner narrow center">
+      <div class="closing-heart">
+        <svg viewBox="0 0 100 90"><path d="M50 87 C50 87 4 57 4 27 C4 12 16 1 30 1 C40 1 47 7 50 14 C53 7 60 1 70 1 C84 1 96 12 96 27 C96 57 50 87 50 87 Z"/></svg>
+      </div>
+      <span class="section-eyebrow center" data-split>penutup</span>
+      <h2 class="closing-title text-reveal" data-split>
+        You're my sun and <br>You're my <span class="italic-accent">ocean.</span>
+      </h2>
+      <p class="section-text center" data-split>
+        Apa pun yang terjadi setelah ini, kamu akan mendapatkan versi terbaik dari diriku,
+        aku selalu berkembang agar kamu terus bahagia bersama ku kedepannya .
+        aku janji itu , aku akan membuktikannya untukmu.
+      </p>
+      <button class="btn btn-primary magnetic closing-cta" id="closingBtn" data-reveal>
+        <span>Kirim Cinta Kembali</span>
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+      <p class="footer-note">dibuat dengan <i class="fa-solid fa-heart pulse-small"></i> - permohonan maaf by nanda kurniawan.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= LIGHTBOX ================= -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose"><i class="fa-solid fa-xmark"></i></button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+  <span class="lightbox-caption" id="lightboxCaption"></span>
+</div>
+
+<!-- Heart burst on closing click -->
+<div class="heart-burst-layer" id="heartBurstLayer"></div>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
